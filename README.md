@@ -17,3 +17,5 @@ uv run pytest
 To reset, copy the fixture to a new workspace file. Run one process at a time per file; the JSON store has no cross-process transaction lock. All orders, payments and approvals are fictional. No real payment processor or customer mailbox is contacted.
 
 `scenarios/README.md` includes the ordinary partial refund, absent/wrong approval, prior refund and interrupted ticket update. Offline tests prove deterministic policy and state behavior with an injected proposal. They do not prove Claude's decision quality. No live model run or token-usage record is available from this environment. The Firedrill connection waits for the new official release and verified operation contract. No public license has been selected.
+
+Explore related applications in the [Firedrill example catalog](https://github.com/firedrill-tools/firedrill-example-catalog). Product and setup references: [Firedrill](https://firedrill.run/) and the [official developer documentation](https://docs.firedrill.run/). Use documentation matching the qualified release; this repository records its current integration limits above.
