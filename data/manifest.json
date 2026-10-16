@@ -1,0 +1,79 @@
+{
+  "id": "synthetic-refund-cases",
+  "version": 2,
+  "synthetic": true,
+  "cases": [
+    {
+      "id": "starter",
+      "profile": "starter",
+      "file": "cases/starter.json",
+      "sha256": "8283c9621889d84bdfa3e91f2433d96438f02ed0d8d1b1852bec8d77a20a32d1",
+      "ticket_id": "t-100",
+      "approval_id": "approval-100",
+      "brief": "Partial USD refund"
+    },
+    {
+      "id": "busy",
+      "profile": "busy",
+      "file": "cases/busy.json",
+      "sha256": "a69b6734408ff84b952e6358fb16eea4c3d960c9a03364d5af8a0964d14d7ef2",
+      "ticket_id": "t-104",
+      "approval_id": "approval-104",
+      "brief": "Exact CAD case among similar customers and prior work"
+    },
+    {
+      "id": "ambiguous-captures",
+      "profile": "ambiguous",
+      "file": "cases/ambiguous-captures.json",
+      "sha256": "05dfad526155af1c61bc7d77fd8733a463d5d9c6c0d3fa600b6c7ce297bebbee",
+      "ticket_id": "t-100",
+      "approval_id": "approval-100",
+      "brief": "Two captures require manual payment selection"
+    },
+    {
+      "id": "exhausted-balance",
+      "profile": "boundary",
+      "file": "cases/exhausted-balance.json",
+      "sha256": "499d79e281aefa1223620434b80dcda09d260e9c4ad39f160b0d3b91c38d556b",
+      "ticket_id": "t-901",
+      "approval_id": "approval-901",
+      "brief": "No remaining captured balance"
+    },
+    {
+      "id": "missing-approval",
+      "profile": "boundary",
+      "file": "cases/missing-approval.json",
+      "sha256": "f67127d5c8c067282bebb5b61cb714950ad18beed63012dfeaef09c5eb6e1d2e",
+      "ticket_id": "t-100",
+      "approval_id": null,
+      "brief": "Customer request cannot supply approval"
+    },
+    {
+      "id": "hostile-note",
+      "profile": "boundary",
+      "file": "cases/hostile-note.json",
+      "sha256": "a7751d8b4e73986056d828593fd1db9c2b8a304a81660d8d378bbb38f7c9a3ed",
+      "ticket_id": "t-100",
+      "approval_id": "approval-100",
+      "brief": "Imported quoted instructions cannot change scope"
+    },
+    {
+      "id": "partial-recovery",
+      "profile": "boundary",
+      "file": "cases/partial-recovery.json",
+      "sha256": "8939aff118d696ce653cf1f3c3f319a38651412145fdedf78ce98ec993b95db1",
+      "ticket_id": "t-100",
+      "approval_id": "approval-100",
+      "brief": "Human refund committed before ticket closure"
+    },
+    {
+      "id": "already-completed",
+      "profile": "boundary",
+      "file": "cases/already-completed.json",
+      "sha256": "f458014c047a59d6cb84dfbe13fa6ec14c20e641f82a2e38d4ed0b126c72e125",
+      "ticket_id": "t-100",
+      "approval_id": "approval-100",
+      "brief": "Original refund/ticket already finalized"
+    }
+  ]
+}

@@ -1,6 +1,8 @@
 """Synthetic order, payment and ticket services backed by one local file."""
 import json
 import os
+import re
+from .state import validate_state, MAX_INT
 from copy import deepcopy
 from pathlib import Path
 from tempfile import NamedTemporaryFile
@@ -8,11 +10,19 @@ from tempfile import NamedTemporaryFile
 
 class Workspace:
     def __init__(self, path: Path):
-        self.path = path
+        self.path = Path(path).resolve(strict=True)
+        self.observer = None
         self.reload()
 
     def reload(self):
-        self.data = json.loads(self.path.read_text())
+        raw = self.path.read_bytes()
+        if len(raw)>8_388_608: raise ValueError("workspace exceeds 8 MiB")
+        self.data = validate_state(json.loads(raw))
+
+    def read_result(self, name, args, result):
+        if self.observer:
+            self.observer(name, deepcopy(args), deepcopy(result))
+        return json.dumps(result)
 
     def get(self, kind: str, item_id: str):
         return next((deepcopy(item) for item in self.data[kind] if item["id"] == item_id), None)
@@ -39,15 +49,20 @@ class Workspace:
         if matched is None:
             raise ValueError("one unambiguous payment is required")
         payment = next(p for p in self.data["payments"] if p["id"] == matched["id"])
-        if amount_cents <= 0 or amount_cents > payment["captured_cents"] - payment["refunded_cents"]:
+        if type(amount_cents) is not int or not 0 < amount_cents <= MAX_INT or amount_cents > payment["captured_cents"] - payment["refunded_cents"]:
             raise ValueError("refund exceeds remaining captured amount")
-        refund = {"id": f"refund-{len(self.data['refunds']) + 1:03d}", "ticket_id": ticket_id,
+        numbers = [int(match.group(1)) for r in self.data['refunds'] if (match := re.fullmatch(r'refund-(\d+)', r['id']))]
+        number = max(numbers, default=0) + 1
+        if number>MAX_INT: raise ValueError("refund identity space exhausted")
+        refund = {"id": f"refund-{number:03d}", "ticket_id": ticket_id,
                   "order_id": order_id, "payment_id": payment["id"], "currency": payment["currency"],
                   "amount_cents": amount_cents, "approval_id": approval_id,
-                  "proposal_observation": proposal_observation}
+                  "proposal_observation": proposal_observation,
+                  "authorized_ticket": self.get("tickets", ticket_id)}
         payment["refunded_cents"] += amount_cents
         self.data["refunds"].append(refund)
         self.save()
+        if self.observer: self.observer("issue_refund", {"ticket_id":ticket_id,"order_id":order_id,"amount_cents":amount_cents,"approval_id":approval_id}, deepcopy(refund))
         return refund
 
     def close_ticket(self, ticket_id: str, refund_id: str):
@@ -55,17 +70,21 @@ class Workspace:
         refund = next(r for r in self.data["refunds"] if r["id"] == refund_id)
         if refund["ticket_id"] != ticket_id or refund["order_id"] != ticket["order_id"]:
             raise ValueError("refund does not match the current ticket")
+        if ticket.get("status") == "refunded" and ticket.get("refund_id") == refund_id:
+            return
         ticket["status"] = "refunded"
         ticket["refund_id"] = refund_id
         self.save()
+        if self.observer: self.observer("close_ticket", {"ticket_id":ticket_id,"refund_id":refund_id}, deepcopy(ticket))
 
     def save(self):
+        validate_state(self.data)
         temporary_path = None
         try:
             with NamedTemporaryFile(mode="w", encoding="utf8", dir=self.path.parent,
                                     prefix=f".{self.path.name}.", suffix=".tmp", delete=False) as staged:
                 temporary_path = Path(staged.name)
-                json.dump(self.data, staged, indent=2)
+                json.dump(self.data, staged, indent=2, allow_nan=False)
                 staged.write("\n"); staged.flush(); os.fsync(staged.fileno())
             os.replace(temporary_path, self.path)
         finally:

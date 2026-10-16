@@ -9,5 +9,8 @@ jobs:
         with:
           python-version: '3.12'
       - run: uv sync --dev --locked
-      - run: uv run pytest
+      - run: uv run --locked python scripts/build_fixtures.py
+      - run: git diff --exit-code -- data
+      - run: uv run --locked pytest -q
       - run: uv build
+      - run: uv run --locked python scripts/check_distribution.py

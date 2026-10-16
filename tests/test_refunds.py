@@ -153,8 +153,10 @@ def test_actual_pydantic_agent_reads_only_the_assigned_case_and_records_reported
     monkeypatch.setenv("ANTHROPIC_API_KEY", "offline-test-not-a-provider-key")
     result, usage = propose("t-100", workspace, "anthropic:scripted-request-model")
     assert result.amount_cents == 4999 and len(turns) == 2
-    assert usage == {"requests": 2, "input_tokens": 80, "output_tokens": 30, "total_tokens": 110,
-                     "requested_model": "anthropic:scripted-request-model", "response_model": "scripted-response-model", "cost_usd": None}
+    assert usage["requests"] == 2 and usage["requested_model"] == "anthropic:scripted-request-model"
+    assert usage["response_model"] == "scripted-response-model" and usage["cost_usd"] is None
+    assert usage["input_tokens"] is None and usage["provider_observations"] == []
+    assert usage["sdk_usage"]["input_tokens"] == 80 and usage["sdk_usage"]["output_tokens"] == 30
     assert workspace.data["refunds"] == []
 
 
@@ -172,9 +174,12 @@ def test_invalid_stored_money_does_not_authorize_a_payment(tmp_path, field, valu
         workspace.data["approvals"][0]["amount_cents"] = value
     else:
         workspace.data["payments"][0][field + "_cents"] = value
-    workspace.save()
-    assert resolve("t-100", "approval-100", workspace, "anthropic:test", proposal(1))["status"] == "review"
-    assert workspace.data["refunds"] == []
+    before = workspace.path.read_bytes()
+    with pytest.raises(ValueError, match="safe integer cents"):
+        workspace.save()
+    assert workspace.path.read_bytes() == before
+    assert Workspace(workspace.path).data["refunds"] == []
+
 
 
 @pytest.mark.parametrize("change", ["approval_revoked", "balance_changed"])

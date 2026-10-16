@@ -1,0 +1,741 @@
+{
+  "dataset": {
+    "id": "synthetic-refund-cases",
+    "version": 2,
+    "profile": "busy",
+    "case_id": "busy"
+  },
+  "orders": [
+    {
+      "id": "ord-100",
+      "customer_email": "mira@harbor.example",
+      "status": "delivered",
+      "total_cents": 12999,
+      "currency": "USD"
+    },
+    {
+      "id": "ord-101",
+      "customer_email": "leo@northstar.example",
+      "status": "delivered",
+      "total_cents": 8000,
+      "currency": "USD"
+    },
+    {
+      "id": "ord-102",
+      "customer_email": "ana@cedar.example",
+      "status": "processing",
+      "total_cents": 6500,
+      "currency": "USD"
+    },
+    {
+      "id": "ord-103",
+      "customer_email": "mira@harborlabs.example",
+      "status": "delivered",
+      "total_cents": 5999,
+      "currency": "USD"
+    },
+    {
+      "id": "ord-104",
+      "customer_email": "mina@maple.example",
+      "status": "delivered",
+      "total_cents": 7400,
+      "currency": "CAD"
+    },
+    {
+      "id": "ord-105",
+      "customer_email": "ivo@harbor.example",
+      "status": "delivered",
+      "total_cents": 5875,
+      "currency": "CAD",
+      "created_at": "2026-09-05T10:00:00Z"
+    },
+    {
+      "id": "ord-106",
+      "customer_email": "iva@harborlabs.example",
+      "status": "delivered",
+      "total_cents": 6050,
+      "currency": "USD",
+      "created_at": "2026-09-06T10:00:00Z"
+    },
+    {
+      "id": "ord-107",
+      "customer_email": "nia@cedar.example",
+      "status": "delivered",
+      "total_cents": 6225,
+      "currency": "USD",
+      "created_at": "2026-09-07T10:00:00Z"
+    },
+    {
+      "id": "ord-108",
+      "customer_email": "nia@cedarlabs.example",
+      "status": "delivered",
+      "total_cents": 6400,
+      "currency": "CAD",
+      "created_at": "2026-09-08T10:00:00Z"
+    },
+    {
+      "id": "ord-109",
+      "customer_email": "omar@maple.example",
+      "status": "delivered",
+      "total_cents": 6575,
+      "currency": "USD",
+      "created_at": "2026-09-09T10:00:00Z"
+    },
+    {
+      "id": "ord-110",
+      "customer_email": "uma@maplelabs.example",
+      "status": "delivered",
+      "total_cents": 6750,
+      "currency": "USD",
+      "created_at": "2026-09-10T10:00:00Z"
+    },
+    {
+      "id": "ord-111",
+      "customer_email": "tao@atlas.example",
+      "status": "delivered",
+      "total_cents": 6925,
+      "currency": "CAD",
+      "created_at": "2026-09-11T10:00:00Z"
+    },
+    {
+      "id": "ord-112",
+      "customer_email": "tia@atlaslabs.example",
+      "status": "delivered",
+      "total_cents": 7100,
+      "currency": "USD",
+      "created_at": "2026-09-12T10:00:00Z"
+    },
+    {
+      "id": "ord-113",
+      "customer_email": "ari@spruce.example",
+      "status": "delivered",
+      "total_cents": 7275,
+      "currency": "USD",
+      "created_at": "2026-09-13T10:00:00Z"
+    },
+    {
+      "id": "ord-114",
+      "customer_email": "ari@sprucelabs.example",
+      "status": "delivered",
+      "total_cents": 7450,
+      "currency": "CAD",
+      "created_at": "2026-09-14T10:00:00Z"
+    },
+    {
+      "id": "ord-115",
+      "customer_email": "rae@elm.example",
+      "status": "delivered",
+      "total_cents": 7625,
+      "currency": "USD",
+      "created_at": "2026-09-15T10:00:00Z"
+    },
+    {
+      "id": "ord-116",
+      "customer_email": "rey@elmlabs.example",
+      "status": "delivered",
+      "total_cents": 7800,
+      "currency": "USD",
+      "created_at": "2026-09-16T10:00:00Z"
+    },
+    {
+      "id": "ord-117",
+      "customer_email": "eli@pine.example",
+      "status": "delivered",
+      "total_cents": 7975,
+      "currency": "CAD",
+      "created_at": "2026-09-17T10:00:00Z"
+    },
+    {
+      "id": "ord-118",
+      "customer_email": "ella@pinelabs.example",
+      "status": "delivered",
+      "total_cents": 8150,
+      "currency": "USD",
+      "created_at": "2026-09-18T10:00:00Z"
+    },
+    {
+      "id": "ord-119",
+      "customer_email": "sol@birch.example",
+      "status": "delivered",
+      "total_cents": 8325,
+      "currency": "USD",
+      "created_at": "2026-09-19T10:00:00Z"
+    }
+  ],
+  "payments": [
+    {
+      "id": "pay-100",
+      "order_id": "ord-100",
+      "currency": "USD",
+      "captured_cents": 12999,
+      "refunded_cents": 0
+    },
+    {
+      "id": "pay-101",
+      "order_id": "ord-101",
+      "currency": "USD",
+      "captured_cents": 8000,
+      "refunded_cents": 2000
+    },
+    {
+      "id": "pay-102",
+      "order_id": "ord-102",
+      "currency": "USD",
+      "captured_cents": 6500,
+      "refunded_cents": 0
+    },
+    {
+      "id": "pay-103",
+      "order_id": "ord-103",
+      "currency": "USD",
+      "captured_cents": 5999,
+      "refunded_cents": 0
+    },
+    {
+      "id": "pay-104",
+      "order_id": "ord-104",
+      "currency": "CAD",
+      "captured_cents": 7400,
+      "refunded_cents": 0
+    },
+    {
+      "id": "pay-105",
+      "order_id": "ord-105",
+      "currency": "CAD",
+      "captured_cents": 5875,
+      "refunded_cents": 625
+    },
+    {
+      "id": "pay-106",
+      "order_id": "ord-106",
+      "currency": "USD",
+      "captured_cents": 6050,
+      "refunded_cents": 650
+    },
+    {
+      "id": "pay-107",
+      "order_id": "ord-107",
+      "currency": "USD",
+      "captured_cents": 6225,
+      "refunded_cents": 675
+    },
+    {
+      "id": "pay-108",
+      "order_id": "ord-108",
+      "currency": "CAD",
+      "captured_cents": 6400,
+      "refunded_cents": 700
+    },
+    {
+      "id": "pay-109",
+      "order_id": "ord-109",
+      "currency": "USD",
+      "captured_cents": 6575,
+      "refunded_cents": 725
+    },
+    {
+      "id": "pay-110",
+      "order_id": "ord-110",
+      "currency": "USD",
+      "captured_cents": 6750,
+      "refunded_cents": 750
+    },
+    {
+      "id": "pay-111",
+      "order_id": "ord-111",
+      "currency": "CAD",
+      "captured_cents": 6925,
+      "refunded_cents": 0
+    },
+    {
+      "id": "pay-112",
+      "order_id": "ord-112",
+      "currency": "USD",
+      "captured_cents": 7100,
+      "refunded_cents": 0
+    },
+    {
+      "id": "pay-113",
+      "order_id": "ord-113",
+      "currency": "USD",
+      "captured_cents": 7275,
+      "refunded_cents": 0
+    },
+    {
+      "id": "pay-114",
+      "order_id": "ord-114",
+      "currency": "CAD",
+      "captured_cents": 7450,
+      "refunded_cents": 0
+    },
+    {
+      "id": "pay-115",
+      "order_id": "ord-115",
+      "currency": "USD",
+      "captured_cents": 7625,
+      "refunded_cents": 0
+    },
+    {
+      "id": "pay-116",
+      "order_id": "ord-116",
+      "currency": "USD",
+      "captured_cents": 7800,
+      "refunded_cents": 0
+    },
+    {
+      "id": "pay-117",
+      "order_id": "ord-117",
+      "currency": "CAD",
+      "captured_cents": 7975,
+      "refunded_cents": 0
+    },
+    {
+      "id": "pay-118",
+      "order_id": "ord-118",
+      "currency": "USD",
+      "captured_cents": 8150,
+      "refunded_cents": 0
+    },
+    {
+      "id": "pay-119",
+      "order_id": "ord-119",
+      "currency": "USD",
+      "captured_cents": 8325,
+      "refunded_cents": 0
+    }
+  ],
+  "tickets": [
+    {
+      "id": "t-100",
+      "order_id": "ord-100",
+      "customer_email": "mira@harbor.example",
+      "message": "The package arrived damaged. Please refund the damaged item for $49.99.",
+      "status": "open"
+    },
+    {
+      "id": "t-101",
+      "order_id": "ord-101",
+      "customer_email": "leo@northstar.example",
+      "message": "I requested a $20 refund last week; please check whether it happened.",
+      "status": "open"
+    },
+    {
+      "id": "t-102",
+      "order_id": "ord-102",
+      "customer_email": "ana@cedar.example",
+      "message": "Can you refund $65 while this order is still processing?",
+      "status": "open"
+    },
+    {
+      "id": "t-103",
+      "order_id": "ord-103",
+      "customer_email": "mira@harborlabs.example",
+      "message": "One accessory arrived damaged. Please refund USD 15.00.",
+      "status": "open"
+    },
+    {
+      "id": "t-104",
+      "order_id": "ord-104",
+      "customer_email": "mina@maple.example",
+      "message": "Please refund CAD 22.00 for the damaged part of my order.",
+      "status": "open"
+    },
+    {
+      "id": "t-history-101",
+      "order_id": "ord-101",
+      "customer_email": "leo@northstar.example",
+      "message": "Refund USD 20.00 for the earlier damaged shipment.",
+      "status": "refunded",
+      "refund_id": "refund-004"
+    },
+    {
+      "id": "t-105",
+      "order_id": "ord-105",
+      "customer_email": "ivo@harbor.example",
+      "message": "Please refund CAD 6.25 for the damaged accessory.",
+      "status": "refunded",
+      "refund_id": "refund-009"
+    },
+    {
+      "id": "t-106",
+      "order_id": "ord-106",
+      "customer_email": "iva@harborlabs.example",
+      "message": "Please refund USD 6.50 for the damaged accessory.",
+      "status": "refunded",
+      "refund_id": "refund-010"
+    },
+    {
+      "id": "t-107",
+      "order_id": "ord-107",
+      "customer_email": "nia@cedar.example",
+      "message": "Please refund USD 6.75 for the damaged accessory.",
+      "status": "refunded",
+      "refund_id": "refund-011"
+    },
+    {
+      "id": "t-108",
+      "order_id": "ord-108",
+      "customer_email": "nia@cedarlabs.example",
+      "message": "Please refund CAD 7.00 for the damaged accessory.",
+      "status": "refunded",
+      "refund_id": "refund-012"
+    },
+    {
+      "id": "t-109",
+      "order_id": "ord-109",
+      "customer_email": "omar@maple.example",
+      "message": "Please refund USD 7.25 for the damaged accessory.",
+      "status": "refunded",
+      "refund_id": "refund-013"
+    },
+    {
+      "id": "t-110",
+      "order_id": "ord-110",
+      "customer_email": "uma@maplelabs.example",
+      "message": "Please refund USD 7.50 for the damaged accessory.",
+      "status": "refunded",
+      "refund_id": "refund-014"
+    },
+    {
+      "id": "t-111",
+      "order_id": "ord-111",
+      "customer_email": "tao@atlas.example",
+      "message": "Please refund CAD 7.75 for the damaged accessory.",
+      "status": "open"
+    },
+    {
+      "id": "t-112",
+      "order_id": "ord-112",
+      "customer_email": "tia@atlaslabs.example",
+      "message": "Please refund USD 8.00 for the damaged accessory.",
+      "status": "open"
+    },
+    {
+      "id": "t-113",
+      "order_id": "ord-113",
+      "customer_email": "ari@spruce.example",
+      "message": "Please refund USD 8.25 for the damaged accessory.",
+      "status": "open"
+    },
+    {
+      "id": "t-114",
+      "order_id": "ord-114",
+      "customer_email": "ari@sprucelabs.example",
+      "message": "Please refund CAD 8.50 for the damaged accessory.",
+      "status": "open"
+    },
+    {
+      "id": "t-115",
+      "order_id": "ord-115",
+      "customer_email": "rae@elm.example",
+      "message": "Please refund USD 8.75 for the damaged accessory.",
+      "status": "open"
+    },
+    {
+      "id": "t-116",
+      "order_id": "ord-116",
+      "customer_email": "rey@elmlabs.example",
+      "message": "Please refund USD 9.00 for the damaged accessory.",
+      "status": "open"
+    },
+    {
+      "id": "t-117",
+      "order_id": "ord-117",
+      "customer_email": "eli@pine.example",
+      "message": "Please refund CAD 9.25 for the damaged accessory.",
+      "status": "open"
+    },
+    {
+      "id": "t-118",
+      "order_id": "ord-118",
+      "customer_email": "ella@pinelabs.example",
+      "message": "Please refund USD 9.50 for the damaged accessory.",
+      "status": "open"
+    },
+    {
+      "id": "t-119",
+      "order_id": "ord-119",
+      "customer_email": "sol@birch.example",
+      "message": "Please refund USD 9.75 for the damaged accessory.",
+      "status": "open"
+    }
+  ],
+  "approvals": [
+    {
+      "id": "approval-100",
+      "ticket_id": "t-100",
+      "order_id": "ord-100",
+      "amount_cents": 4999,
+      "currency": "USD",
+      "status": "approved"
+    },
+    {
+      "id": "approval-103",
+      "ticket_id": "t-103",
+      "order_id": "ord-103",
+      "amount_cents": 1500,
+      "currency": "USD",
+      "status": "approved"
+    },
+    {
+      "id": "approval-104",
+      "ticket_id": "t-104",
+      "order_id": "ord-104",
+      "amount_cents": 2200,
+      "currency": "CAD",
+      "status": "approved"
+    },
+    {
+      "id": "approval-history-101",
+      "ticket_id": "t-history-101",
+      "order_id": "ord-101",
+      "amount_cents": 2000,
+      "currency": "USD",
+      "status": "approved"
+    },
+    {
+      "id": "approval-105",
+      "ticket_id": "t-105",
+      "order_id": "ord-105",
+      "amount_cents": 625,
+      "currency": "CAD",
+      "status": "approved"
+    },
+    {
+      "id": "approval-106",
+      "ticket_id": "t-106",
+      "order_id": "ord-106",
+      "amount_cents": 650,
+      "currency": "USD",
+      "status": "approved"
+    },
+    {
+      "id": "approval-107",
+      "ticket_id": "t-107",
+      "order_id": "ord-107",
+      "amount_cents": 675,
+      "currency": "USD",
+      "status": "approved"
+    },
+    {
+      "id": "approval-108",
+      "ticket_id": "t-108",
+      "order_id": "ord-108",
+      "amount_cents": 700,
+      "currency": "CAD",
+      "status": "approved"
+    },
+    {
+      "id": "approval-109",
+      "ticket_id": "t-109",
+      "order_id": "ord-109",
+      "amount_cents": 725,
+      "currency": "USD",
+      "status": "approved"
+    },
+    {
+      "id": "approval-110",
+      "ticket_id": "t-110",
+      "order_id": "ord-110",
+      "amount_cents": 750,
+      "currency": "USD",
+      "status": "approved"
+    },
+    {
+      "id": "approval-111",
+      "ticket_id": "t-111",
+      "order_id": "ord-111",
+      "amount_cents": 775,
+      "currency": "CAD",
+      "status": "approved"
+    },
+    {
+      "id": "approval-112",
+      "ticket_id": "t-112",
+      "order_id": "ord-112",
+      "amount_cents": 800,
+      "currency": "USD",
+      "status": "approved"
+    },
+    {
+      "id": "approval-113",
+      "ticket_id": "t-113",
+      "order_id": "ord-113",
+      "amount_cents": 825,
+      "currency": "USD",
+      "status": "approved"
+    },
+    {
+      "id": "approval-114",
+      "ticket_id": "t-114",
+      "order_id": "ord-114",
+      "amount_cents": 850,
+      "currency": "CAD",
+      "status": "approved"
+    },
+    {
+      "id": "approval-115",
+      "ticket_id": "t-115",
+      "order_id": "ord-115",
+      "amount_cents": 875,
+      "currency": "USD",
+      "status": "approved"
+    },
+    {
+      "id": "approval-116",
+      "ticket_id": "t-116",
+      "order_id": "ord-116",
+      "amount_cents": 900,
+      "currency": "USD",
+      "status": "approved"
+    },
+    {
+      "id": "approval-117",
+      "ticket_id": "t-117",
+      "order_id": "ord-117",
+      "amount_cents": 925,
+      "currency": "CAD",
+      "status": "pending"
+    },
+    {
+      "id": "approval-118",
+      "ticket_id": "t-118",
+      "order_id": "ord-118",
+      "amount_cents": 950,
+      "currency": "USD",
+      "status": "pending"
+    },
+    {
+      "id": "approval-119",
+      "ticket_id": "t-119",
+      "order_id": "ord-119",
+      "amount_cents": 975,
+      "currency": "USD",
+      "status": "pending"
+    }
+  ],
+  "refunds": [
+    {
+      "id": "refund-004",
+      "ticket_id": "t-history-101",
+      "order_id": "ord-101",
+      "payment_id": "pay-101",
+      "currency": "USD",
+      "amount_cents": 2000,
+      "approval_id": "approval-history-101",
+      "authorized_ticket": {
+        "id": "t-history-101",
+        "order_id": "ord-101",
+        "customer_email": "leo@northstar.example",
+        "message": "Refund USD 20.00 for the earlier damaged shipment.",
+        "status": "open"
+      },
+      "proposal_observation": null,
+      "provenance": "fictional prior human refund"
+    },
+    {
+      "id": "refund-009",
+      "ticket_id": "t-105",
+      "order_id": "ord-105",
+      "payment_id": "pay-105",
+      "currency": "CAD",
+      "amount_cents": 625,
+      "approval_id": "approval-105",
+      "proposal_observation": null,
+      "authorized_ticket": {
+        "id": "t-105",
+        "order_id": "ord-105",
+        "customer_email": "ivo@harbor.example",
+        "message": "Please refund CAD 6.25 for the damaged accessory.",
+        "status": "open"
+      }
+    },
+    {
+      "id": "refund-010",
+      "ticket_id": "t-106",
+      "order_id": "ord-106",
+      "payment_id": "pay-106",
+      "currency": "USD",
+      "amount_cents": 650,
+      "approval_id": "approval-106",
+      "proposal_observation": null,
+      "authorized_ticket": {
+        "id": "t-106",
+        "order_id": "ord-106",
+        "customer_email": "iva@harborlabs.example",
+        "message": "Please refund USD 6.50 for the damaged accessory.",
+        "status": "open"
+      }
+    },
+    {
+      "id": "refund-011",
+      "ticket_id": "t-107",
+      "order_id": "ord-107",
+      "payment_id": "pay-107",
+      "currency": "USD",
+      "amount_cents": 675,
+      "approval_id": "approval-107",
+      "proposal_observation": null,
+      "authorized_ticket": {
+        "id": "t-107",
+        "order_id": "ord-107",
+        "customer_email": "nia@cedar.example",
+        "message": "Please refund USD 6.75 for the damaged accessory.",
+        "status": "open"
+      }
+    },
+    {
+      "id": "refund-012",
+      "ticket_id": "t-108",
+      "order_id": "ord-108",
+      "payment_id": "pay-108",
+      "currency": "CAD",
+      "amount_cents": 700,
+      "approval_id": "approval-108",
+      "proposal_observation": null,
+      "authorized_ticket": {
+        "id": "t-108",
+        "order_id": "ord-108",
+        "customer_email": "nia@cedarlabs.example",
+        "message": "Please refund CAD 7.00 for the damaged accessory.",
+        "status": "open"
+      }
+    },
+    {
+      "id": "refund-013",
+      "ticket_id": "t-109",
+      "order_id": "ord-109",
+      "payment_id": "pay-109",
+      "currency": "USD",
+      "amount_cents": 725,
+      "approval_id": "approval-109",
+      "proposal_observation": null,
+      "authorized_ticket": {
+        "id": "t-109",
+        "order_id": "ord-109",
+        "customer_email": "omar@maple.example",
+        "message": "Please refund USD 7.25 for the damaged accessory.",
+        "status": "open"
+      }
+    },
+    {
+      "id": "refund-014",
+      "ticket_id": "t-110",
+      "order_id": "ord-110",
+      "payment_id": "pay-110",
+      "currency": "USD",
+      "amount_cents": 750,
+      "approval_id": "approval-110",
+      "proposal_observation": null,
+      "authorized_ticket": {
+        "id": "t-110",
+        "order_id": "ord-110",
+        "customer_email": "uma@maplelabs.example",
+        "message": "Please refund USD 7.50 for the damaged accessory.",
+        "status": "open"
+      }
+    }
+  ],
+  "synthetic": true,
+  "provenance": "Entirely fictional business records; prior effects are human/local work, not model executions or measured provider usage."
+}

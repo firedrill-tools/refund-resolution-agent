@@ -7,3 +7,5 @@ workspace.json
 run-output/
 .*.tmp
 .env
+
+runs/

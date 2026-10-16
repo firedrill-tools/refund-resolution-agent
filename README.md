@@ -1,44 +1,84 @@
-# Refund resolution agent
+# Resolve approved refunds with Pydantic AI and Claude
 
-A Pydantic AI agent using Claude inspects a support ticket, order and captured payment through read-only tools, then proposes a typed refund decision. The application applies exact approval, identity, currency and remaining-balance checks before issuing a synthetic refund and updating the ticket. The model never receives a payment-write tool.
+A Claude analyst reads an assigned support ticket, order and captured payment through scoped read tools, then proposes a typed decision. Application policy checks fresh identity, approval, currency and integer cents before a local synthetic payment and ticket update. The model has no approval or payment-write tool. Earlier committed payments remain inspectable after later failures.
 
-## Run
+## Run one case
 
-Requires Python 3.12, `uv` and an Anthropic API key for a model run.
+Requires Python 3.12+ and `uv`. Only a fresh model proposal requires `ANTHROPIC_API_KEY` and incurs provider usage; listing, initialization, recorded-payment recovery and offline checks need no key.
 
 ```sh
-uv sync --dev
-cp fixtures/starter.json workspace.json
-ANTHROPIC_API_KEY=... uv run resolve-refund t-100 \
-  --approval-id approval-100 --workspace workspace.json
-uv run pytest
+uv sync --dev --locked
+uv run --locked resolve-refund --list-cases
+uv run --locked resolve-refund --init-case busy --workspace run-output/busy.json
+uv run --locked resolve-refund t-104 --approval-id approval-104 \
+  --workspace run-output/busy.json
 ```
 
-To reset, copy the fixture to a new workspace file. Run one process at a time per file; the JSON store has no cross-process transaction lock. All orders, payments and approvals are fictional. No real payment processor or customer mailbox is contacted.
+Set the key through your environment/secret manager. `--model` or `ANTHROPIC_MODEL` selects an `anthropic:<model>` identifier; the default is `anthropic:claude-sonnet-4-6`. The native endpoint is explicitly `https://api.anthropic.com`, independent of provider-global base-URL variables. `create_client` is the connection seam for a caller-supplied transport or explicit endpoint. The normal CLI has no scripted model mode. `--output-root DIR` chooses the receipt root.
 
-`ANTHROPIC_MODEL` or `--model` selects the configured Anthropic model; the default is `anthropic:claude-sonnet-4-6`. A normal invocation calls Claude through Pydantic AI `2.56.0` and may incur provider cost. The final JSON contains the resolution and SDK-reported request/token usage, requested/returned model identifiers, and unknown cost as null. All-zero unreported token counters stay null. A successful refund retains its proposal and observation in the refund record. A retry that finds that record makes no new model request and returns `model_usage: null`; its nested original observation must not be counted again.
+`--init-case` validates bundled hashes and identities and exclusively creates a private file; it never overwrites a workspace. Its JSON prints the exact ticket/approval selectors. An approval selector only finds an existing stored authorization; it cannot create one. Use a separate state file per independent case. The four legacy `fixtures/` remain authoring/compatibility inputs; manually copying one does not establish a manifest-qualified case.
 
-## Records and authorization
+The callable seams share the normal policy/runtime:
 
-The model can read only its assigned ticket and that ticket's current order/payment matches. It has no approval or payment-write tool. After planning, the application reloads saved state and checks the current ticket, order, payment and approval. Changed customer instructions or identity require review; a closed/cancelled ticket cannot authorize a new refund. The order, payment and approved amount must agree on currency, identity and integer cents, and the amount must fit the remaining capture.
+```python
+from pathlib import Path
+from refund_resolution.datasets import initialize
+from refund_resolution.service import resolve_async
+from refund_resolution.workspace import Workspace
 
-This narrow payment adapter supports one unambiguous captured payment per order. Multiple captures, missing payment currency or inconsistent money records require review; it never chooses the first payment silently. Historical refund recovery rechecks the current ticket/order/payment relationship before closing a ticket. Legacy records lacking that evidence require review and cannot trigger a second payment.
+selected = initialize("starter", Path("run-output/starter.json"))
+result = await resolve_async(selected["ticket_id"], selected["approval_id"],
+    Workspace(Path(selected["workspace"])), "anthropic:claude-sonnet-4-6")
+```
 
-State saves flush a staged file before atomic replacement. If replacement fails, the previous on-disk state remains readable. Discard the in-memory workspace after an I/O failure, reopen the persisted file and retry the same ticket; never assume an interrupted operation paid or failed solely from the CLI error. These safeguards preserve the one-writer restriction and do not implement a remote payment processor's transaction protocol.
+Synchronous applications use `resolve`; `propose_async`/`propose` expose the read-only planning seam. `build_agent` is a lower-level, caller-owned framework builder, not the complete policy/receipt runtime. Trusted injected proposers are for composition/tests and must return a validated `Proposal`; their work and observations are caller-owned.
 
-## Datasets and verification
+## Native completion and resource ownership
 
-All four fixtures declare dataset `synthetic-refund-cases`, version `1`:
+Pinned execution uses Pydantic AI **2.56.0**, Anthropic SDK **1.14.0** and HTTPX2 **2.13.1**. A native HTTP probe found the framework accepting valid structured proposals with `max_tokens`, and tool calls marked `end_turn`. Public HTTP hooks now retain and validate a full Messages JSON response before the SDK can release a proposal or dispatch read tools. Truncated, blank, malformed, inconsistent and mixed proposal/read output fails. A model-request error never issues payment. The qualified path is nonstreaming Messages JSON; wire SSE is not qualified.
 
-| Profile | File | Included situation |
-|---|---|---|
-| Starter | `fixtures/starter.json` | Partial refund, prior partial payment state and processing order |
-| Busy ordinary | `fixtures/busy.json` | Five orders, similar customer addresses, USD/CAD payments and exact independent approvals |
-| Ambiguous | `fixtures/ambiguous.json` | One order paid through two captures, requiring manual payment selection |
-| Boundary | `fixtures/boundary.json` | A fully refunded CAD order and a new request with no remaining captured balance |
+Normal limits are eight model requests, 24 read-tool calls, 4,096 output tokens, 30-second HTTP phase timeouts and a 120-second overall proposal deadline. SDK transport and framework validation retries are zero. The application owns a fresh agent, HTTP/SDK client and cancellation scope for each native proposal; success, startup failure, provider error, cancellation and deadline close them. Read tools run in the same event loop and perform bounded local reads; they do not leave background tool threads. `resolve_async` cancellation and CLI SIGINT/SIGTERM reach that scope. Cancellation cannot reverse a committed payment or establish that remote provider computation/billing stopped.
 
-Copy the selected file into a fresh ignored `run-output/` path and pass `--workspace`; the target sees assigned business records, not scenario briefs. `scenarios/README.md` records case inputs, reset and completion boundaries. The CLI emits JSON after the resolution and any ticket update finish; an exception can follow a committed payment, so inspect the saved refund record before resuming.
+A completed receipt means policy returned `refunded`, `already_refunded`, `deny` or `review`, with current state validated. It is not a semantic correctness score. Failure/cancellation produces no successful result and CLI exits nonzero; errors expose `receipt_path`, in-memory `evidence` and available native observations. Inspection of actual effects remains necessary after an interrupted run. Forced termination may leave a `running` receipt.
 
-`uv run --locked pytest -q` passes 23 offline cases. These cover four reproduced authorization bugs, fresh-record checks, exact money, atomic-save failure, restart recovery and preservation of unrelated busy-profile records. An actual Pydantic AI loop with a `FunctionModel` exercises assigned-case tools, typed output and usage serialization without calling a provider. Scripted request/token values in that check are test data, not live measurements. Claude's decision quality and real provider usage remain unverified. The Firedrill connection waits for the new official release and verified operation contract. No public license has been selected.
+## Authorization, effects and recovery
 
-Explore related applications in the [Firedrill example catalog](https://github.com/firedrill-tools/firedrill-example-catalog). Product and setup references: [Firedrill](https://firedrill.run/) and the [official developer documentation](https://docs.firedrill.run/). Use documentation matching the qualified release; this repository records its current integration limits above.
+| Boundary | Supported operation |
+|---|---|
+| `read_ticket` | Exact assigned ticket only |
+| `read_order` | That ticket's currently linked order only |
+| `read_payment` | All captures for that exact order; no first-match selection |
+| Application policy | Fresh approval/identity/currency/remaining balance, then one refund per ticket |
+| Synthetic payment store | Adjust capture balance and append refund together in one atomic file replacement |
+| Support store | Close the same ticket with its recorded refund in a later replacement |
+
+After planning, the application rereads the file. A changed customer request/identity, closed or cancelled ticket, revoked/missing authorization, wrong amount/currency, ambiguous capture or insufficient balance requires review. Approvals must match the ticket, order, currency and exact positive integer amount. Order delivery is required. These are narrow local service subsets, not real payment/ticket API compatibility.
+
+A retry first finds the saved refund and makes **no new model call or payment**. Recovery rechecks its payment/order/customer links and original authorized customer request before closing the ticket. A correction, cancellation or legacy refund lacking that evidence requires review. The refund preserves the original proposal, raw observations and authorization snapshot. A replay's `model_usage` is null; nested original evidence is historical and must not be counted as a new execution.
+
+Schemas reject duplicate IDs, orphan references, invalid statuses, unsafe/coerced money and contradictory recorded refund balances. Imported ID gaps remain; new refund IDs advance from the maximum. Saves stage private files, flush/fsync, and atomically replace state. A failed replacement leaves the previous file readable; reopen it after an I/O failure. State and receipt publications are separate, and payment and ticket updates are deliberately separate commits. No rollback or remote-payment transaction protocol is claimed.
+
+Canonical paths and an in-process claim reject overlapping resolutions, including aliases. Run one writer/process per file; there is no cross-process lock. The application restores caller observation hooks and releases its claim. Reset requires stopping the owner and initializing another file. It covers local business state, not receipts, provider retention/billing or caller-owned resources. No durable framework conversation/session is configured. No production payment rail or mailbox is connected.
+
+## Receipts and usage
+
+Schema-1 receipts live under `<workspace-directory>/runs/<run-id>/receipt.json` by default, with 0700 run directories and 0600 files. Atomic updates begin before model work and record initial/current/final byte hashes, declared dataset identity, actual installed SDK versions, requested/reported models, raw provider body/error text, HTTP status/request IDs, timestamps, tool-call IDs/arguments/results and committed financial effects. Inherited dataset tags do not prove an edited input remains its original snapshot: use its actual initial hash.
+
+Raw bodies are decoded HTTP response bytes captured **before SDK defaults/validation**, not original compressed wire bytes. The 1 MiB evidence cap is checked after public HTTP buffering, so it is not a network or memory bound. An oversized response stops proposal release; original body hash, truncated content and any parseable measurements remain. A recording failure also stops further work; persistent publication failure exposes `evidence_error` in memory and cannot claim the last receipt was updated. SDK error causes remain available alongside the receipt.
+
+`reported_usage` uses only actual nonnegative integer fields. Missing, partial, invalid and explicitly reported zero counts remain distinct. Input combines uncached, cache-creation and cache-read tokens according to [Anthropic's usage definition](https://platform.claude.com/docs/en/build-with-claude/prompt-caching); totals are complete only when every observation reports all four necessary counts. Failed attempts are included when measured. Unknown cost stays null. `sdk_usage` separately retains normalized counters and any SDK price estimate; those defaults/estimates are not provider-reported counts or measured billing. A model-free replay has zero observed attempts and unknown new token/cost measurements.
+
+## Data, verification and distribution
+
+`synthetic-refund-cases` version **2** has eight hash-bound cases across starter, busy, ambiguous and boundary profiles: starter, busy, ambiguous captures, exhausted balance, missing approval, hostile note, partial recovery and already completed. Busy contains 20 coherent orders/payments, 21 tickets and seven prior human refunds, with similar customer names, USD/CAD amounts, pending approvals and ID gaps. Prior work is explicitly fictional human/local activity; no model decisions or measured usage are seeded. [Scenario briefs](scenarios/README.md) and manifest expectations stay outside target context; only the assigned business records reach its tools.
+
+```sh
+uv run --locked pytest -q
+uv run --locked python scripts/build_fixtures.py
+uv build
+uv run --locked python scripts/check_distribution.py
+```
+
+The 62 offline checks include actual native HTTP/SDK execution, loopback CLI success/error/SIGTERM, SDK budgets/cleanup, raw usage, recording failures, corrected recovery, atomic state and dataset drift. A separate `FunctionModel` case exercises the framework loop. Controlled provider choices prove boundaries, not Claude judgment, a success rate or paid usage. CI regenerates exact dataset bytes. Wheel and source-distribution gates install fresh locked dependencies outside checkout and run help/list/eight private initializations, model-free payment recovery, failed-key evidence and real busy-state operations on macOS/Linux.
+
+Live Claude decision quality/budget, new released Firedrill integration, public visibility and license ownership remain parked. A thin integration can use these existing CLI/callable/state/receipt seams after the official contract is qualified. Explore the [example catalog](https://github.com/firedrill-tools/firedrill-example-catalog), [Firedrill](https://firedrill.run/) and [official documentation](https://docs.firedrill.run/).

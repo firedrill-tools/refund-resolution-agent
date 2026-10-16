@@ -1,0 +1,75 @@
+{
+  "dataset": {
+    "id": "synthetic-refund-cases",
+    "version": 2,
+    "profile": "boundary",
+    "case_id": "exhausted-balance"
+  },
+  "orders": [
+    {
+      "id": "ord-900",
+      "customer_email": "jo@cedar.example",
+      "status": "delivered",
+      "total_cents": 1000,
+      "currency": "CAD"
+    }
+  ],
+  "payments": [
+    {
+      "id": "pay-900",
+      "order_id": "ord-900",
+      "currency": "CAD",
+      "captured_cents": 1000,
+      "refunded_cents": 1000
+    }
+  ],
+  "tickets": [
+    {
+      "id": "t-900",
+      "order_id": "ord-900",
+      "customer_email": "jo@cedar.example",
+      "message": "The item was unusable. Please refund the full CAD 10.00.",
+      "status": "refunded",
+      "refund_id": "refund-historical-900"
+    },
+    {
+      "id": "t-901",
+      "order_id": "ord-900",
+      "customer_email": "jo@cedar.example",
+      "message": "Can I receive another CAD 5.00 for this order?",
+      "status": "open"
+    }
+  ],
+  "approvals": [
+    {
+      "id": "approval-900",
+      "ticket_id": "t-900",
+      "order_id": "ord-900",
+      "amount_cents": 1000,
+      "currency": "CAD",
+      "status": "approved"
+    },
+    {
+      "id": "approval-901",
+      "ticket_id": "t-901",
+      "order_id": "ord-900",
+      "amount_cents": 500,
+      "currency": "CAD",
+      "status": "approved"
+    }
+  ],
+  "refunds": [
+    {
+      "id": "refund-historical-900",
+      "ticket_id": "t-900",
+      "order_id": "ord-900",
+      "payment_id": "pay-900",
+      "currency": "CAD",
+      "amount_cents": 1000,
+      "approval_id": "approval-900",
+      "proposal_observation": null
+    }
+  ],
+  "synthetic": true,
+  "provenance": "Entirely fictional business records; prior effects are human/local work, not model executions or measured provider usage."
+}

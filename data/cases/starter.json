@@ -1,0 +1,90 @@
+{
+  "dataset": {
+    "id": "synthetic-refund-cases",
+    "version": 2,
+    "profile": "starter",
+    "case_id": "starter"
+  },
+  "orders": [
+    {
+      "id": "ord-100",
+      "customer_email": "mira@harbor.example",
+      "status": "delivered",
+      "total_cents": 12999,
+      "currency": "USD"
+    },
+    {
+      "id": "ord-101",
+      "customer_email": "leo@northstar.example",
+      "status": "delivered",
+      "total_cents": 8000,
+      "currency": "USD"
+    },
+    {
+      "id": "ord-102",
+      "customer_email": "ana@cedar.example",
+      "status": "processing",
+      "total_cents": 6500,
+      "currency": "USD"
+    }
+  ],
+  "payments": [
+    {
+      "id": "pay-100",
+      "order_id": "ord-100",
+      "currency": "USD",
+      "captured_cents": 12999,
+      "refunded_cents": 0
+    },
+    {
+      "id": "pay-101",
+      "order_id": "ord-101",
+      "currency": "USD",
+      "captured_cents": 8000,
+      "refunded_cents": 2000
+    },
+    {
+      "id": "pay-102",
+      "order_id": "ord-102",
+      "currency": "USD",
+      "captured_cents": 6500,
+      "refunded_cents": 0
+    }
+  ],
+  "tickets": [
+    {
+      "id": "t-100",
+      "order_id": "ord-100",
+      "customer_email": "mira@harbor.example",
+      "message": "The package arrived damaged. Please refund the damaged item for $49.99.",
+      "status": "open"
+    },
+    {
+      "id": "t-101",
+      "order_id": "ord-101",
+      "customer_email": "leo@northstar.example",
+      "message": "I requested a $20 refund last week; please check whether it happened.",
+      "status": "open"
+    },
+    {
+      "id": "t-102",
+      "order_id": "ord-102",
+      "customer_email": "ana@cedar.example",
+      "message": "Can you refund $65 while this order is still processing?",
+      "status": "open"
+    }
+  ],
+  "approvals": [
+    {
+      "id": "approval-100",
+      "ticket_id": "t-100",
+      "order_id": "ord-100",
+      "amount_cents": 4999,
+      "currency": "USD",
+      "status": "approved"
+    }
+  ],
+  "refunds": [],
+  "synthetic": true,
+  "provenance": "Entirely fictional business records; prior effects are human/local work, not model executions or measured provider usage."
+}

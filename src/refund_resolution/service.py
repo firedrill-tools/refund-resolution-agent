@@ -1,10 +1,67 @@
 """Enforce approval, amount, identity, and idempotency after model proposal."""
-from .agent import Proposal, propose
+import asyncio
+from copy import deepcopy
+import inspect
+from threading import Lock
+from .agent import Proposal, propose_async
+from .evidence import Receipt
 from .workspace import Workspace
 
 
+_active_workspaces = set()
+_claim_lock = Lock()
+
+
 def resolve(ticket_id: str, approval_id: str | None, workspace: Workspace,
-            model: str, proposer=propose) -> dict:
+            model: str, proposer=None, **options) -> dict:
+    """Synchronous entry point. Async applications use resolve_async."""
+    return asyncio.run(resolve_async(ticket_id, approval_id, workspace, model, proposer, **options))
+
+
+async def resolve_async(ticket_id: str, approval_id: str | None, workspace: Workspace,
+                        model: str, proposer=None, *, output_root=None, transport=None, timeout_seconds=120) -> dict:
+    path = workspace.path.resolve(strict=True)
+    with _claim_lock:
+        if path in _active_workspaces:
+            raise RuntimeError("workspace already has an active refund resolution")
+        _active_workspaces.add(path)
+    receipt = None; result = None; failure = None
+    previous_observer = workspace.observer
+    try:
+        workspace.reload()
+        receipt = Receipt(workspace, ticket_id, approval_id, model, output_root)
+        def observe(name, args, value):
+            receipt.action(name,args,value)
+            if previous_observer: previous_observer(name,args,value)
+        workspace.observer = observe
+        async def plan(*args):
+            if proposer is not None:
+                value = proposer(*args)
+                return await value if inspect.isawaitable(value) else value
+            return await propose_async(*args, transport=transport, on_observation=receipt.observations, timeout_seconds=timeout_seconds)
+        result = await _resolve(ticket_id,approval_id,workspace,model,plan)
+        workspace.reload()
+        result.update(run_id=receipt.data['run_id'],receipt_path=str(receipt.path))
+    except BaseException as error:
+        failure = error
+        if receipt and hasattr(error,'observations'):
+            receipt.data['provider_observations'] = deepcopy(error.observations)
+    finally:
+        workspace.observer = previous_observer
+        with _claim_lock: _active_workspaces.discard(path)
+        if receipt:
+            try: receipt.finish(result,failure)
+            except BaseException as error:
+                receipt.data.update(status='failed',evidence_error=f'{type(error).__name__}: {error}')
+                if failure is None: failure=error
+    if failure is not None:
+        failure.evidence = receipt.data if receipt else None
+        failure.receipt_path = str(receipt.path) if receipt else None
+        raise failure
+    return result
+
+
+async def _resolve(ticket_id, approval_id, workspace, model, proposer):
     workspace.reload()
     ticket = workspace.get("tickets", ticket_id)
     if ticket is None:
@@ -14,7 +71,10 @@ def resolve(ticket_id: str, approval_id: str | None, workspace: Workspace,
         return recover(ticket, previous, workspace)
     if ticket["status"] != "open":
         return {"status": "review", "reason": "ticket is not open", "model_usage": None}
-    proposal, usage = proposer(ticket_id, workspace, model)
+    proposal, usage = await proposer(ticket_id, workspace, model)
+    await asyncio.sleep(0)  # Deliver pending cancellation before financial effects.
+    if not isinstance(proposal, Proposal):
+        raise ValueError("proposer did not return a validated Proposal")
     workspace.reload()
     current = workspace.get("tickets", ticket_id)
     if current != ticket:
@@ -67,7 +127,10 @@ def resolve(ticket_id: str, approval_id: str | None, workspace: Workspace,
 def recover(ticket: dict, previous: dict, workspace: Workspace) -> dict:
     order = workspace.get("orders", ticket.get("order_id", ""))
     payment = workspace.get("payments", previous.get("payment_id", ""))
-    if (ticket.get("status") not in {"open", "refunded"} or order is None
+    original = previous.get("authorized_ticket")
+    same_intent = isinstance(original, dict) and all(original.get(key) == ticket.get(key) for key in ("id", "order_id", "customer_email", "message"))
+    if (not same_intent or ticket.get("status") not in {"open", "refunded"} or order is None
+            or (ticket.get("status") == "refunded" and ticket.get("refund_id") != previous.get("id"))
             or previous.get("order_id") != ticket.get("order_id")
             or ticket["customer_email"].casefold() != order["customer_email"].casefold()
             or payment is None or payment["order_id"] != previous["order_id"]
