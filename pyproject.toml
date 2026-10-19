@@ -23,7 +23,7 @@ packages = ["src/refund_resolution"]
 "data" = "refund_resolution/sample_data"
 
 [tool.hatch.build.targets.sdist]
-include = ["src", "data", "fixtures", "tests", "scripts", "scenarios", "README.md", "AGENTS.md", "PLAN.md", "pyproject.toml", "uv.lock"]
+include = ["firedrill", ".github", ".gitignore", "src", "data", "fixtures", "tests", "scripts", "scenarios", "README.md", "AGENTS.md", "PLAN.md", "pyproject.toml", "uv.lock"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

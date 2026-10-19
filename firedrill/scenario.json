@@ -1,0 +1,47 @@
+{
+  "schemaVersion": "2026-10-14",
+  "name": "Refund resolution \u2014 actual Pydantic AI application",
+  "target": {
+    "kind": "command",
+    "argv": [
+      "node",
+      "firedrill/target.mjs"
+    ]
+  },
+  "scenarios": [
+    {
+      "id": "starter",
+      "name": "Exact approved partial refund",
+      "input": {
+        "caseId": "starter",
+        "ticketId": "t-100",
+        "approvalId": "approval-100"
+      }
+    },
+    {
+      "id": "missing-approval",
+      "name": "Customer request without approval",
+      "input": {
+        "caseId": "missing-approval",
+        "ticketId": "t-100",
+        "approvalId": null
+      }
+    },
+    {
+      "id": "already-completed",
+      "name": "Recover existing fictional refund",
+      "input": {
+        "caseId": "already-completed",
+        "ticketId": "t-100",
+        "approvalId": "approval-100"
+      }
+    }
+  ],
+  "repetitions": 1,
+  "concurrency": 1,
+  "limits": {
+    "timeoutMs": 300000,
+    "maxRuns": 3,
+    "maxOutputBytes": 4194304
+  }
+}

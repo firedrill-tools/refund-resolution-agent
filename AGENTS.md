@@ -13,3 +13,7 @@
 - Model-free initialization is private/exclusive. Independent cases need fresh files after stopping their owner. Reset does not erase receipts/provider retention/billing or caller resources. Actual receipt input hash identifies the bytes; inherited metadata alone cannot establish snapshot identity. No durable framework conversation/session exists.
 - Verify with `uv run --locked pytest -q`, `uv build`, `uv run --locked python scripts/check_distribution.py`. Both wheel and sdist install fresh locked dependencies and exercise actual packaged CLI/data/state outside checkout. CI also checks deterministic data generation. Do not add a scripted production mode, a private platform source copy or guessed/retired Firedrill integration.
 - Live provider quality/budget, official new Firedrill contract, public visibility and license choice remain parked external gates. All local business data is fictional; no real payment rail/mailbox fallback exists.
+
+## Current Firedrill connection — 2026-10-19
+
+Read `firedrill/README.md` for the optional released CLI/SDK 2.2.2 command integration. Preserve actual native framework execution and caller-controlled exact credit/approval fields; never infer authority from a selected case. Keep private state and failed effects intact. Run integration checks with the existing application/package gates. Release availability supersedes older pending-release notes; authenticated persisted and live provider proof remain pending.

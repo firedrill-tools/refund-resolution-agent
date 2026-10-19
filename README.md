@@ -82,3 +82,7 @@ uv run --locked python scripts/check_distribution.py
 The 62 offline checks include actual native HTTP/SDK execution, loopback CLI success/error/SIGTERM, SDK budgets/cleanup, raw usage, recording failures, corrected recovery, atomic state and dataset drift. A separate `FunctionModel` case exercises the framework loop. Controlled provider choices prove boundaries, not Claude judgment, a success rate or paid usage. CI regenerates exact dataset bytes. Wheel and source-distribution gates install fresh locked dependencies outside checkout and run help/list/eight private initializations, model-free payment recovery, failed-key evidence and real busy-state operations on macOS/Linux.
 
 Live Claude decision quality/budget, new released Firedrill integration, public visibility and license ownership remain parked. A thin integration can use these existing CLI/callable/state/receipt seams after the official contract is qualified. Explore the [example catalog](https://github.com/firedrill-tools/firedrill-example-catalog), [Firedrill](https://firedrill.run/) and [official documentation](https://docs.firedrill.run/).
+
+## Current Firedrill connection — 2026-10-19
+
+The [agent-first integration](firedrill/README.md) pins released CLI/SDK 2.2.2 and invokes the actual application CLI with fresh private state. Caller credit amounts/approval identities remain explicit and independent of case selection. Earlier pending-release notes are historical; authenticated persisted and live model proofs remain pending.
