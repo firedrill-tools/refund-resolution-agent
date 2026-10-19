@@ -6,12 +6,12 @@ const root = fileURLToPath(new URL('../', import.meta.url));
 const cases = new Set(['starter', 'missing-approval', 'already-completed']);
 const id = value => typeof value === 'string' && /^[A-Za-z0-9_-]{1,100}$/.test(value);
 
-export async function runApplication(input, parameters, signal) {
+export async function runApplication(input, parameters, signal, invocation) {
   if (Object.keys(input).some(key => !['caseId', 'ticketId', 'approvalId'].includes(key)) || !cases.has(input.caseId) ||
       !id(input.ticketId) || !(input.approvalId === null || id(input.approvalId))) {
     throw new Error('Supply a reviewed case, exact ticket ID and explicit caller approval ID or null.');
   }
-  const directory = await privateDirectory(root);
+  const directory = await privateDirectory(root, invocation);
   const state = join(directory, 'workspace.json');
   const cli = ['uv', 'run', '--locked', '--no-sync', 'resolve-refund'];
   try {
